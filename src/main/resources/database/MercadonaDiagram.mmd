@@ -1,0 +1,36 @@
+erDiagram
+    TIENDA {
+        NUMBER codigo PK
+        VARCHAR2 nombre
+    }
+
+    SECCION {
+        VARCHAR2 nombre PK
+        NUMBER horas_necesarias
+    }
+
+    TIENDA_SECCION {
+        NUMBER tienda PK, FK
+        VARCHAR2 seccion PK, FK
+    }
+
+    TRABAJADOR {
+        VARCHAR2 dni PK
+        VARCHAR2 nombre
+        VARCHAR2 apellidos
+        NUMBER tienda FK
+        NUMBER horas_disponibles
+    }
+
+    TRABAJADOR_SECCION {
+        VARCHAR2 trabajador PK, FK
+        NUMBER tienda PK, FK
+        VARCHAR2 seccion PK, FK
+        NUMBER horas_asignadas
+    }
+
+    TIENDA ||--o{ TIENDA_SECCION : dispone_de
+    SECCION ||--o{ TIENDA_SECCION : esta_en
+    TIENDA ||--o{ TRABAJADOR : tiene
+    TRABAJADOR ||--o{ TRABAJADOR_SECCION : trabaja_en
+    TIENDA_SECCION ||--o{ TRABAJADOR_SECCION : recibe_asignacion
