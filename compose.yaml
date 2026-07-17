@@ -1,0 +1,39 @@
+services:
+  database:
+    image: gvenzl/oracle-free:23-slim-faststart
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:-oracle_admin}
+      APP_USER: ${DB_USERNAME:-mercadona}
+      APP_USER_PASSWORD: ${DB_PASSWORD:-mercadona}
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./docker/001-init-schema.sh:/container-entrypoint-initdb.d/001-init-schema.sh:ro
+      - ./src/main/resources/database/init.sql:/opt/mercadona/init.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    restart: unless-stopped
+
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@//database:1521/FREEPDB1
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-mercadona}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-mercadona}
+    ports:
+      - "8081:8081"
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  oracle-data:
