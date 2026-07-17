@@ -7,7 +7,7 @@ CREATE TABLE tienda (
 CREATE TABLE seccion (
     nombre VARCHAR2(50) NOT NULL,
     horas_necesarias NUMBER(2) NOT NULL,
-    CONSTRAINT pk_seccion PRIMARY KEY (nombre),
+    CONSTRAINT pk_seccion PRIMARY KEY (nombre)
 );
 
 CREATE TABLE tienda_seccion (
