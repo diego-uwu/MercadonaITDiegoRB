@@ -53,4 +53,16 @@ INSERT INTO seccion (nombre, horas_necesarias) VALUES ('Pescaderia', 16);
 INSERT INTO seccion (nombre, horas_necesarias) VALUES ('Verduras', 16);
 INSERT INTO seccion (nombre, horas_necesarias) VALUES ('Drogueria', 16);
 
+INSERT INTO tienda (codigo, nombre) VALUES (1, 'Madrid centro');
+INSERT INTO tienda (codigo, nombre) VALUES (2, 'Valencia centro');
+INSERT INTO tienda (codigo, nombre) VALUES (3, 'Barcelona centro');
+
+INSERT INTO tienda_seccion (tienda, seccion) VALUES (1, 'Horno');
+INSERT INTO tienda_seccion (tienda, seccion) VALUES (1, 'Cajas');
+INSERT INTO tienda_seccion (tienda, seccion) VALUES (1, 'Pescaderia');
+INSERT INTO tienda_seccion (tienda, seccion) VALUES (1, 'Verduras');
+INSERT INTO tienda_seccion (tienda, seccion) VALUES (1, 'Drogueria');
+
+INSERT INTO trabajador (dni, nombre, apellidos, tienda, horas_disponibles) VALUES ('12345678A', 'Diego', 'Rodríguez Barrera', 1, 8);
+
 COMMIT;
