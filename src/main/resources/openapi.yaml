@@ -115,7 +115,58 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-
+  /turno/{DNI}/{seccion}:
+    put:
+      summary: Crea o actualiza un turno
+      description: Crea o actualiza un turno dado el DNI del empleado y la sección de la tienda en la que trabaja
+      tags:
+        - Turnos
+      parameters:
+        - name: DNI
+          in: path
+          required: true
+          description: DNI del trabajador
+          example: 12345678A
+          schema:
+            type: string
+        - name: seccion
+          in: path
+          required: true
+          description: Sección de la tienda
+          example: Pescaderia
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TurnoDto'
+      responses:
+        '201':
+          description: Turno creado o actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TurnoDto'
+        '409':
+          description: Este turno excede el máximo de horas disponibles para el trabajador
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+    delete:
+      summary: Elimina un turno de un empleado
+      de
+      responses:
+        '204':
+          description: Turno eliminado correctamente
+        '404':
+          description: Turno no encontrado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 components:
   schemas:
     ProblemDetail:
@@ -144,43 +195,6 @@ components:
           format: uri
           example: /trabajador/12345678A
 
-    TiendaDto:
-      type: object
-      additionalProperties: false
-      required:
-        - codigo
-        - nombre
-      properties:
-        codigo:
-          type: integer
-          format: int64
-          description: Código de la tienda
-          example: 1234
-        nombre:
-          type: string
-          maxLength: 100
-          description: Nombre de la tienda
-          example: Valencia Centro
-
-    SeccionDto:
-      type: object
-      additionalProperties: false
-      required:
-        - nombre
-        - horasNecesarias
-      properties:
-        nombre:
-          type: string
-          maxLength: 50
-          description: Nombre de la sección
-          example: Pescaderia
-        horasNecesarias:
-          type: integer
-          minimum: 1
-          maximum: 24
-          description: Horas diarias necesarias para cubrir la sección
-          example: 16
-
     TiendaSeccionDto:
       type: object
       additionalProperties: false
@@ -193,7 +207,7 @@ components:
           type: integer
           format: int64
           description: Código de la tienda
-          example: 1001
+          example: 1
         seccion:
           type: string
           maxLength: 50
@@ -214,7 +228,7 @@ components:
           type: string
           maxLength: 9
           description: DNI del trabajador
-          example: 12345678Z
+          example: 12345678A
         nombre:
           type: string
           maxLength: 100
@@ -229,7 +243,7 @@ components:
           type: integer
           format: int64
           description: Código de la tienda en la que trabaja el trabajador
-          example: 1001
+          example: 1
         horasDisponibles:
           type: integer
           minimum: 0
@@ -237,34 +251,28 @@ components:
           description: Horas diarias de trabajo disponibles
           example: 8
 
-    TrabajadorSeccionDto:
+    TurnoDto:
       type: object
       additionalProperties: false
-      description: Asignación de un trabajador a una sección en su tienda
-      required:
-        - trabajador
-        - tienda
-        - seccion
-        - horasAsignadas
       properties:
-        trabajador:
+        dniTrabajador:
           type: string
           maxLength: 9
           description: DNI del trabajador
-          example: 12345678Z
+          example: 12345678A
         tienda:
           type: integer
           format: int64
           description: Código de la tienda en la que trabaja el trabajador
-          example: 1001
+          example: 1
         seccion:
           type: string
           maxLength: 50
           description: Nombre de la sección
-          example: Horno
-        horasAsignadas:
+          example: Pescaderia
+        horas:
           type: integer
           minimum: 1
           maximum: 8
           description: Horas diarias asignadas al trabajador en esta sección
-          example: 2
+          example: 8
