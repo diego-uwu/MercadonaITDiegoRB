@@ -157,7 +157,6 @@ paths:
                 $ref: '#/components/schemas/ProblemDetail'
     delete:
       summary: Elimina un turno de un empleado
-      de
       responses:
         '204':
           description: Turno eliminado correctamente

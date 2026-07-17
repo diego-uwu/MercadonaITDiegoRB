@@ -32,7 +32,7 @@ public class TrabajadorService {
         if (trabajadorRepository.existsById(trabajadorDto.getDni())) {
             throw new ResourceAlreadyExistsException(
                     "Trabajador",
-                    "dni",
+                    "DNI",
                     trabajadorDto.getDni()
             );
         }
