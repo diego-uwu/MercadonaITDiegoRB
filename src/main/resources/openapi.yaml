@@ -30,6 +30,10 @@ paths:
                 $ref: '#/components/schemas/TrabajadorDto'
         '404':
           description: Trabajador no encontrado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
     put:
       summary: Actualiza un trabajador por su DNI
       description: Actualiza todos los datos del trabajador. El DNI del cuerpo debe coincidir con el indicado en la ruta.
@@ -50,10 +54,22 @@ paths:
                 $ref: '#/components/schemas/TrabajadorDto'
         '400':
           description: Datos no válidos o el DNI del cuerpo no coincide con el de la ruta
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         '404':
           description: Trabajador no encontrado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         '409':
           description: La actualización entra en conflicto con los datos existentes
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
     delete:
       summary: Elimina un trabajador por su DNI
       description: Elimina los datos de un trabajador a partir de su DNI
@@ -64,6 +80,10 @@ paths:
           description: Trabajador eliminado
         '404':
           description: Trabajador no encontrado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /trabajador:
     post:
       summary: Crea un trabajador
@@ -85,11 +105,45 @@ paths:
                 $ref: '#/components/schemas/TrabajadorDto'
         '400':
           description: Datos del trabajador no válidos
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         '409':
           description: Ya existe un trabajador con el DNI indicado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 
 components:
   schemas:
+    ProblemDetail:
+      type: object
+      required:
+        - title
+        - status
+        - detail
+      properties:
+        type:
+          type: string
+          format: uri
+          example: about:blank
+        title:
+          type: string
+          example: Resource not found
+        status:
+          type: integer
+          format: int32
+          example: 404
+        detail:
+          type: string
+          example: Trabajador with identifier 12345678A was not found
+        instance:
+          type: string
+          format: uri
+          example: /trabajador/12345678A
+
     TiendaDto:
       type: object
       additionalProperties: false
