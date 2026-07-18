@@ -28,6 +28,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:oracle:thin:@//database:1521/FREEPDB1
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-mercadona}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-mercadona}
+      STORES_API_BASE_URL: ${STORES_API_BASE_URL:-http://host.docker.internal:8080}
     ports:
       - "8081:8081"
     depends_on:

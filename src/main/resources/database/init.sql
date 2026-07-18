@@ -55,9 +55,9 @@ INSERT INTO seccion (nombre, horas_necesarias) VALUES
 ('Drogueria', 16);
 
 INSERT INTO tienda (codigo, nombre) VALUES
-(1, 'Madrid centro'),
-(2, 'Valencia centro'),
-(3, 'Barcelona centro');
+(1, 'Tienda 1'),
+(2, 'Tienda 2'),
+(3, 'Tienda 3');
 
 INSERT INTO tienda_seccion (tienda, seccion) VALUES
 (1, 'Horno'),
