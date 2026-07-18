@@ -115,25 +115,11 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-  /turno/{DNI}/{seccion}:
-    parameters:
-      - name: DNI
-        in: path
-        required: true
-        description: DNI del trabajador
-        example: 12345678A
-        schema:
-          type: string
-      - name: seccion
-        in: path
-        required: true
-        description: Sección de la tienda
-        example: Pescaderia
-        schema:
-          type: string
+  /turno:
     put:
+      operationId: upsertTurno
       summary: Crea o actualiza un turno
-      description: Crea o actualiza un turno dado el DNI del empleado y la sección de la tienda en la que trabaja
+      description: Crea o actualiza un turno con el DNI y la sección indicados en el cuerpo de la petición
       tags:
         - Turnos
       requestBody:
@@ -155,6 +141,53 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+  /turno/{DNI}:
+    get:
+      operationId: getTurnosByTrabajador
+      summary: Obtiene los turnos de un trabajador
+      description: Recupera todos los turnos asignados al trabajador indicado
+      tags:
+        - Turnos
+      parameters:
+        - name: DNI
+          in: path
+          required: true
+          description: DNI del trabajador
+          schema:
+            type: string
+            maxLength: 9
+          example: 12345678A
+      responses:
+        '200':
+          description: Lista de turnos del trabajador
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TurnoDto'
+        '404':
+          description: Trabajador no encontrado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /turno/{DNI}/{seccion}:
+    parameters:
+      - name: DNI
+        in: path
+        required: true
+        description: DNI del trabajador
+        example: 12345678A
+        schema:
+          type: string
+      - name: seccion
+        in: path
+        required: true
+        description: Sección de la tienda
+        example: Pescaderia
+        schema:
+          type: string
     delete:
       summary: Elimina un turno de un empleado
       description: Elimina un turno de un empleado dado el DNI del empleado y la sección de la tienda en la que trabaja
@@ -256,6 +289,10 @@ components:
     TurnoDto:
       type: object
       additionalProperties: false
+      required:
+        - dniTrabajador
+        - seccion
+        - horas
       properties:
         dniTrabajador:
           type: string

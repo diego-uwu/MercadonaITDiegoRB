@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -14,6 +15,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class TurnoId implements Serializable {

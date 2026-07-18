@@ -36,6 +36,17 @@ public class ApiExceptionHandler {
         );
     }
 
+    @ExceptionHandler(HorasDisponiblesExceededException.class)
+    public ProblemDetail handleHorasDisponiblesExceeded(
+            HorasDisponiblesExceededException exception
+    ) {
+        return createProblemDetail(
+                HttpStatus.CONFLICT,
+                "Horas disponibles excedidas",
+                exception.getMessage()
+        );
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleDataIntegrityViolation() {
         return createProblemDetail(
