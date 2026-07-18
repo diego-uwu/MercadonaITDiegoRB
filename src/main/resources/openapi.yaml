@@ -202,6 +202,80 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+  /documentos/estado/{tiendaId}:
+    get:
+      operationId: getEstadoTiendaReport
+      summary: Estado de una tienda
+      description: Recupera un PDF que muestra las secciones de una tienda y los empleados asignados a cada una
+      tags:
+        - Documentos
+      parameters:
+        - name: tiendaId
+          in: path
+          required: true
+          description: ID de la tienda
+          example: 1
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: PDF generado correctamente
+          headers:
+            Content-Disposition:
+              description: Nombre sugerido para el archivo PDF
+              schema:
+                type: string
+                example: attachment; filename="estado-tienda-1.pdf"
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Tienda no encontrada
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /documentos/secciones-incompletas/{tiendaId}:
+    get:
+      operationId: getSeccionesIncompletasReport
+      summary: Secciones incompletas de una tienda
+      description: Recupera un PDF que muestra las secciones de una tienda que no tienen cubiertas las horas mínimas requeridas para su correcto desempeño
+      tags:
+        - Documentos
+      parameters:
+        - name: tiendaId
+          in: path
+          required: true
+          description: ID de la tienda
+          example: 1
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: PDF generado correctamente
+          headers:
+            Content-Disposition:
+              description: Nombre sugerido para el archivo PDF
+              schema:
+                type: string
+                example: attachment; filename="secciones-incompletas-tienda-1.pdf"
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Tienda no encontrada
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 components:
   schemas:
     ProblemDetail:
