@@ -116,26 +116,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
   /turno/{DNI}/{seccion}:
+    parameters:
+      - name: DNI
+        in: path
+        required: true
+        description: DNI del trabajador
+        example: 12345678A
+        schema:
+          type: string
+      - name: seccion
+        in: path
+        required: true
+        description: Sección de la tienda
+        example: Pescaderia
+        schema:
+          type: string
     put:
       summary: Crea o actualiza un turno
       description: Crea o actualiza un turno dado el DNI del empleado y la sección de la tienda en la que trabaja
       tags:
         - Turnos
-      parameters:
-        - name: DNI
-          in: path
-          required: true
-          description: DNI del trabajador
-          example: 12345678A
-          schema:
-            type: string
-        - name: seccion
-          in: path
-          required: true
-          description: Sección de la tienda
-          example: Pescaderia
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -157,6 +157,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetail'
     delete:
       summary: Elimina un turno de un empleado
+      description: Elimina un turno de un empleado dado el DNI del empleado y la sección de la tienda en la que trabaja
+      tags:
+        - Turnos
       responses:
         '204':
           description: Turno eliminado correctamente
