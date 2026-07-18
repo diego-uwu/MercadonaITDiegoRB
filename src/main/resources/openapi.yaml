@@ -115,6 +115,64 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+  /trabajador/{DNI}/aptitudes/{aptitud}:
+    parameters:
+      - name: DNI
+        in: path
+        required: true
+        description: DNI del trabajador
+        schema:
+          type: string
+          maxLength: 9
+        example: 12345678A
+      - name: aptitud
+        in: path
+        required: true
+        description: Nombre de una aptitud existente
+        schema:
+          type: string
+          maxLength: 100
+        example: Hornear Pan
+    post:
+      operationId: addAptitudToTrabajador
+      summary: Asigna una aptitud a un trabajador
+      description: Asigna al trabajador una aptitud previamente registrada en el sistema
+      tags:
+        - Aptitudes
+      responses:
+        '201':
+          description: Aptitud asignada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AptitudTrabajadorDto'
+        '404':
+          description: Trabajador o aptitud no encontrados
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: El trabajador ya tiene asignada la aptitud
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+    delete:
+      operationId: deleteAptitudFromTrabajador
+      summary: Elimina una aptitud de un trabajador
+      description: Elimina la asignación de una aptitud al trabajador indicado
+      tags:
+        - Aptitudes
+      responses:
+        '204':
+          description: Aptitud eliminada correctamente
+        '404':
+          description: Trabajador, aptitud o asignación no encontrados
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /turno:
     put:
       operationId: upsertTurno
@@ -142,21 +200,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
   /turno/{DNI}:
+    parameters:
+      - name: DNI
+        in: path
+        required: true
+        description: DNI del trabajador
+        schema:
+          type: string
+          maxLength: 9
+        example: 12345678A
     get:
       operationId: getTurnosByTrabajador
       summary: Obtiene los turnos de un trabajador
       description: Recupera todos los turnos asignados al trabajador indicado
       tags:
         - Turnos
-      parameters:
-        - name: DNI
-          in: path
-          required: true
-          description: DNI del trabajador
-          schema:
-            type: string
-            maxLength: 9
-          example: 12345678A
       responses:
         '200':
           description: Lista de turnos del trabajador
@@ -202,23 +260,23 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-  /documentos/estado/{tiendaId}:
+  /documento/estado/{tiendaId}:
+    parameters:
+      - name: tiendaId
+        in: path
+        required: true
+        description: ID de la tienda
+        example: 1
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
     get:
       operationId: getEstadoTiendaReport
       summary: Estado de una tienda
       description: Recupera un PDF que muestra las secciones de una tienda y los empleados asignados a cada una
       tags:
         - Documentos
-      parameters:
-        - name: tiendaId
-          in: path
-          required: true
-          description: ID de la tienda
-          example: 1
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
       responses:
         '200':
           description: PDF generado correctamente
@@ -239,23 +297,23 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-  /documentos/secciones-incompletas/{tiendaId}:
+  /documento/secciones-incompletas/{tiendaId}:
+    parameters:
+      - name: tiendaId
+        in: path
+        required: true
+        description: ID de la tienda
+        example: 1
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
     get:
       operationId: getSeccionesIncompletasReport
       summary: Secciones incompletas de una tienda
       description: Recupera un PDF que muestra las secciones de una tienda que no tienen cubiertas las horas mínimas requeridas para su correcto desempeño
       tags:
         - Documentos
-      parameters:
-        - name: tiendaId
-          in: path
-          required: true
-          description: ID de la tienda
-          example: 1
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
       responses:
         '200':
           description: PDF generado correctamente
@@ -322,6 +380,25 @@ components:
           maxLength: 50
           description: Nombre de la sección
           example: Pescaderia
+
+    AptitudTrabajadorDto:
+      type: object
+      additionalProperties: false
+      description: Aptitud asignada a un trabajador
+      required:
+        - dniTrabajador
+        - aptitud
+      properties:
+        dniTrabajador:
+          type: string
+          maxLength: 9
+          description: DNI del trabajador
+          example: 12345678A
+        aptitud:
+          type: string
+          maxLength: 100
+          description: Nombre de la aptitud asignada
+          example: Hornear Pan
 
     TrabajadorDto:
       type: object
