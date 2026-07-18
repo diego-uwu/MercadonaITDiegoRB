@@ -47,6 +47,15 @@ public class ApiExceptionHandler {
         );
     }
 
+    @ExceptionHandler(TiendaConTrabajadoresException.class)
+    public ProblemDetail handleTiendaConTrabajadores(TiendaConTrabajadoresException exception) {
+        return createProblemDetail(
+                HttpStatus.CONFLICT,
+                "La tienda tiene trabajadores asignados",
+                exception.getMessage()
+        );
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleDataIntegrityViolation() {
         return createProblemDetail(

@@ -6,6 +6,70 @@ info:
   description: Aplicación para la gestión de tiendas, secciones, trabajadores y sus asignaciones.
 
 paths:
+  /tienda:
+    post:
+      operationId: insertTienda
+      summary: Crea una tienda
+      description: Crea una tienda y la asocia automáticamente con todas las secciones existentes
+      tags:
+        - Tienda
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TiendaDto'
+      responses:
+        '201':
+          description: Tienda creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiendaDto'
+        '400':
+          description: Datos de la tienda no válidos
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: Ya existe una tienda con el código indicado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /tienda/{tiendaId}:
+    parameters:
+      - name: tiendaId
+        in: path
+        required: true
+        description: Código de la tienda
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+        example: 1
+    delete:
+      operationId: deleteTienda
+      summary: Elimina una tienda
+      description: Elimina la tienda y sus asociaciones con secciones, siempre que no tenga trabajadores
+      tags:
+        - Tienda
+      responses:
+        '204':
+          description: Tienda eliminada
+        '404':
+          description: Tienda no encontrada
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: La tienda no se puede eliminar porque tiene trabajadores
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /trabajador/{DNI}:
     parameters:
       - name: DNI
@@ -384,6 +448,27 @@ components:
           maxLength: 50
           description: Nombre de la sección
           example: Pescaderia
+
+    TiendaDto:
+      type: object
+      additionalProperties: false
+      description: Tienda de la cadena
+      required:
+        - codigo
+        - nombre
+      properties:
+        codigo:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Código de la tienda
+          example: 4
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Nombre de la tienda
+          example: Tienda 4
 
     AptitudTrabajadorDto:
       type: object

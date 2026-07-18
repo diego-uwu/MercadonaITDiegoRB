@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface TrabajadorRepository extends JpaRepository<TrabajadorEntity, String> {
 
+    boolean existsByTienda(Long tienda);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT t FROM TrabajadorEntity t WHERE t.dni = :dni")
     Optional<TrabajadorEntity> findByIdForUpdate(@Param("dni") String dni);
