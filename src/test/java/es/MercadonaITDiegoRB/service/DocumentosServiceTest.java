@@ -1,5 +1,7 @@
 package es.MercadonaITDiegoRB.service;
 
+import es.MercadonaITDiegoRB.client.StoresApiClient;
+import es.MercadonaITDiegoRB.client.dto.StoreDto;
 import es.MercadonaITDiegoRB.entity.TiendaEntity;
 import es.MercadonaITDiegoRB.exception.ResourceNotFoundException;
 import es.MercadonaITDiegoRB.repository.TiendaRepository;
@@ -34,17 +36,25 @@ class DocumentosServiceTest {
     @Mock
     private TurnoRepository turnoRepository;
 
+    @Mock
+    private StoresApiClient storesApiClient;
+
     private DocumentosService documentosService;
 
     @BeforeEach
     void setUp() {
-        documentosService = new DocumentosService(tiendaRepository, turnoRepository);
+        documentosService = new DocumentosService(
+                tiendaRepository,
+                turnoRepository,
+                storesApiClient
+        );
     }
 
     @Test
     void generatesEstadoReportWithOneTablePerSection() throws Exception {
         TiendaEntity tienda = new TiendaEntity(TIENDA_ID, "Madrid centro");
         when(tiendaRepository.findById(TIENDA_ID)).thenReturn(Optional.of(tienda));
+        when(storesApiClient.getStore(TIENDA_ID)).thenReturn(store());
         when(turnoRepository.findEstadoTiendaRows(TIENDA_ID)).thenReturn(List.of(
                 row("Cajas", null, null, null),
                 row("Horno", "Ana", "Garcia", 2),
@@ -56,7 +66,9 @@ class DocumentosServiceTest {
 
         assertTrue(pdf.length > 0);
         assertArrayEquals("%PDF".getBytes(), java.util.Arrays.copyOf(pdf, 4));
+        assertTrue(text.contains("Empleados por sección"));
         assertTrue(text.contains("Madrid centro"));
+        assertTrue(text.contains("Dirección: AVDA JUAN CARLOS I . 17, SANTOMERA"));
         assertTrue(text.contains("CAJAS"));
         assertTrue(text.contains("Sin trabajadores asignados"));
         assertTrue(text.contains("HORNO"));
@@ -70,6 +82,7 @@ class DocumentosServiceTest {
     void generatesMessageWhenTiendaHasNoConfiguredSections() throws Exception {
         TiendaEntity tienda = new TiendaEntity(TIENDA_ID, "Madrid centro");
         when(tiendaRepository.findById(TIENDA_ID)).thenReturn(Optional.of(tienda));
+        when(storesApiClient.getStore(TIENDA_ID)).thenReturn(store());
         when(turnoRepository.findEstadoTiendaRows(TIENDA_ID)).thenReturn(List.of());
 
         byte[] pdf = documentosService.getEstadoTiendaReport(TIENDA_ID);
@@ -88,13 +101,14 @@ class DocumentosServiceTest {
                 () -> documentosService.getEstadoTiendaReport(TIENDA_ID)
         );
 
-        verifyNoInteractions(turnoRepository);
+        verifyNoInteractions(turnoRepository, storesApiClient);
     }
 
     @Test
     void generatesSeccionesIncompletasReportWithRemainingHours() throws Exception {
         TiendaEntity tienda = new TiendaEntity(TIENDA_ID, "Madrid centro");
         when(tiendaRepository.findById(TIENDA_ID)).thenReturn(Optional.of(tienda));
+        when(storesApiClient.getStore(TIENDA_ID)).thenReturn(store());
         when(turnoRepository.findSeccionesIncompletasRows(TIENDA_ID)).thenReturn(List.of(
                 incompleteRow("Cajas", 16, 10, 6),
                 incompleteRow("Horno", 8, 0, 8)
@@ -105,7 +119,9 @@ class DocumentosServiceTest {
 
         assertTrue(pdf.length > 0);
         assertArrayEquals("%PDF".getBytes(), java.util.Arrays.copyOf(pdf, 4));
+        assertTrue(text.contains("Secciones con horas insuficientes"));
         assertTrue(text.contains("Madrid centro"));
+        assertTrue(text.contains("Dirección: AVDA JUAN CARLOS I . 17, SANTOMERA"));
         assertTrue(text.contains("Cajas"));
         assertTrue(text.contains("16 h"));
         assertTrue(text.contains("10 h"));
@@ -119,6 +135,7 @@ class DocumentosServiceTest {
     void generatesOperationalMessageWhenNoSectionIsIncomplete() throws Exception {
         TiendaEntity tienda = new TiendaEntity(TIENDA_ID, "Madrid centro");
         when(tiendaRepository.findById(TIENDA_ID)).thenReturn(Optional.of(tienda));
+        when(storesApiClient.getStore(TIENDA_ID)).thenReturn(store());
         when(turnoRepository.findSeccionesIncompletasRows(TIENDA_ID))
                 .thenReturn(List.of());
 
@@ -139,7 +156,7 @@ class DocumentosServiceTest {
                 () -> documentosService.getSeccionesIncompletasReport(TIENDA_ID)
         );
 
-        verifyNoInteractions(turnoRepository);
+        verifyNoInteractions(turnoRepository, storesApiClient);
     }
 
     private String extractText(byte[] pdf) throws Exception {
@@ -207,5 +224,14 @@ class DocumentosServiceTest {
                 return horasRestantes;
             }
         };
+    }
+
+    private StoreDto store() {
+        return new StoreDto(
+                TIENDA_ID,
+                "SANTOMERA",
+                "AVDA JUAN CARLOS I . 17",
+                "SANTOMERA"
+        );
     }
 }

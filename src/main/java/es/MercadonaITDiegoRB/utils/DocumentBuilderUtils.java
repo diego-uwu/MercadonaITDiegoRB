@@ -21,11 +21,28 @@ public class DocumentBuilderUtils {
     public static final Font SECTION_FONT =
             FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.BOLD);
 
-    public void addTitleEstadoTienda(Document document, String tiendaNombre) {
-        Paragraph title = new Paragraph("Empleados por sección de la tienda: " + tiendaNombre, TITLE_FONT);
+    public void addTitleEstadoTienda(Document document) {
+        Paragraph title = new Paragraph("Empleados por sección", TITLE_FONT);
         title.setAlignment(Element.ALIGN_CENTER);
-        title.setSpacingAfter(20);
+        title.setSpacingAfter(12);
         document.add(title);
+    }
+
+    public void addTiendaInfo(
+            Document document,
+            String tiendaNombre,
+            String address,
+            String city
+    ) {
+        Paragraph name = new Paragraph(tiendaNombre, BOLD_FONT);
+        name.setSpacingAfter(4);
+        document.add(name);
+
+        Paragraph location = new Paragraph();
+        location.add(new Chunk("Dirección: ", BOLD_FONT));
+        location.add(new Chunk(address + ", " + city, BODY_FONT));
+        location.setSpacingAfter(18);
+        document.add(location);
     }
 
     public void addSeccionTable(
@@ -71,13 +88,13 @@ public class DocumentBuilderUtils {
         document.add(table);
     }
 
-    public void addTitleSeccionesIncompletas(Document document, String tiendaNombre) {
+    public void addTitleSeccionesIncompletas(Document document) {
         Paragraph title = new Paragraph(
-                "Secciones con horas insuficientes de la tienda: " + tiendaNombre,
+                "Secciones con horas insuficientes",
                 TITLE_FONT
         );
         title.setAlignment(Element.ALIGN_CENTER);
-        title.setSpacingAfter(20);
+        title.setSpacingAfter(12);
         document.add(title);
     }
 

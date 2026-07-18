@@ -87,6 +87,23 @@ class ApiExceptionHandlerTest {
         );
     }
 
+    @Test
+    void mapsExternalApiFailureToBadGateway() {
+        ExternalApiException exception = new ExternalApiException(
+                1L,
+                new RuntimeException("Connection refused")
+        );
+
+        ProblemDetail result = handler.handleExternalApi(exception);
+
+        assertProblemDetail(
+                result,
+                502,
+                "Error al consultar la API de tiendas",
+                exception.getMessage()
+        );
+    }
+
     private void assertProblemDetail(
             ProblemDetail problemDetail,
             int status,

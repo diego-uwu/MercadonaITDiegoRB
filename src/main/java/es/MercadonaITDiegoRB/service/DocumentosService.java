@@ -1,5 +1,7 @@
 package es.MercadonaITDiegoRB.service;
 
+import es.MercadonaITDiegoRB.client.StoresApiClient;
+import es.MercadonaITDiegoRB.client.dto.StoreDto;
 import es.MercadonaITDiegoRB.entity.TiendaEntity;
 import es.MercadonaITDiegoRB.exception.ResourceNotFoundException;
 import es.MercadonaITDiegoRB.repository.TiendaRepository;
@@ -27,10 +29,12 @@ public class DocumentosService {
 
     private final TiendaRepository tiendaRepository;
     private final TurnoRepository turnoRepository;
+    private final StoresApiClient storesApiClient;
 
     public byte[] getEstadoTiendaReport(Long tiendaId) {
         TiendaEntity tienda = tiendaRepository.findById(tiendaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tienda", tiendaId));
+        StoreDto store = storesApiClient.getStore(tiendaId);
 
         List<EstadoTiendaRow> rows = turnoRepository.findEstadoTiendaRows(tiendaId);
         Map<String, List<EstadoTiendaRow>> rowsBySeccion = rows.stream()
@@ -44,10 +48,16 @@ public class DocumentosService {
 
         try (Document document = new Document(PageSize.A4)) {
             PdfWriter.getInstance(document, output);
-            document.addTitle("Estado de la tienda " + tienda.getNombre());
+            document.addTitle("Empleados por sección");
             document.open();
 
-            DocumentBuilderUtils.addTitleEstadoTienda(document, tienda.getNombre());
+            DocumentBuilderUtils.addTitleEstadoTienda(document);
+            DocumentBuilderUtils.addTiendaInfo(
+                    document,
+                    tienda.getNombre(),
+                    store.address(),
+                    store.city()
+            );
 
             if (rowsBySeccion.isEmpty()) {
                 document.add(new Paragraph(
@@ -72,6 +82,7 @@ public class DocumentosService {
     public byte[] getSeccionesIncompletasReport(Long tiendaId) {
         TiendaEntity tienda = tiendaRepository.findById(tiendaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tienda", tiendaId));
+        StoreDto store = storesApiClient.getStore(tiendaId);
 
         List<SeccionIncompletaRow> rows =
                 turnoRepository.findSeccionesIncompletasRows(tiendaId);
@@ -79,12 +90,15 @@ public class DocumentosService {
 
         try (Document document = new Document(PageSize.A4)) {
             PdfWriter.getInstance(document, output);
-            document.addTitle("Secciones incompletas de la tienda " + tienda.getNombre());
+            document.addTitle("Secciones con horas insuficientes");
             document.open();
 
-            DocumentBuilderUtils.addTitleSeccionesIncompletas(
+            DocumentBuilderUtils.addTitleSeccionesIncompletas(document);
+            DocumentBuilderUtils.addTiendaInfo(
                     document,
-                    tienda.getNombre()
+                    tienda.getNombre(),
+                    store.address(),
+                    store.city()
             );
 
             if (rows.isEmpty()) {

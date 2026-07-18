@@ -57,6 +57,15 @@ public class ApiExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ExternalApiException.class)
+    public ProblemDetail handleExternalApi(ExternalApiException exception) {
+        return createProblemDetail(
+                HttpStatus.BAD_GATEWAY,
+                "Error al consultar la API de tiendas",
+                exception.getMessage()
+        );
+    }
+
     private ProblemDetail createProblemDetail(HttpStatus status, String title, String detail) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
         problemDetail.setTitle(title);
