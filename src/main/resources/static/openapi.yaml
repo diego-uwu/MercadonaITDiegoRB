@@ -15,8 +15,9 @@ paths:
         schema:
           type: string
           maxLength: 9
-        example: 12345678Z
+        example: 11111111A
     get:
+      operationId: getTrabajador
       summary: Obtiene un trabajador por su DNI
       description: Recupera los datos de un trabajador a partir de su DNI
       tags:
@@ -34,9 +35,26 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
+    delete:
+      operationId: deleteTrabajador
+      summary: Elimina un trabajador por su DNI
+      description: Elimina los datos de un trabajador a partir de su DNI
+      tags:
+        - Trabajador
+      responses:
+        '204':
+          description: Trabajador eliminado
+        '404':
+          description: Trabajador no encontrado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /trabajador:
     put:
-      summary: Actualiza un trabajador por su DNI
-      description: Actualiza todos los datos del trabajador. El DNI del cuerpo debe coincidir con el indicado en la ruta.
+      operationId: updateTrabajador
+      summary: Actualiza un trabajador
+      description: Actualiza todos los datos del trabajador identificado por el DNI incluido en el cuerpo
       tags:
         - Trabajador
       requestBody:
@@ -53,7 +71,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TrabajadorDto'
         '400':
-          description: Datos no válidos o el DNI del cuerpo no coincide con el de la ruta
+          description: Datos del trabajador no válidos
           content:
             application/problem+json:
               schema:
@@ -70,22 +88,8 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
-    delete:
-      summary: Elimina un trabajador por su DNI
-      description: Elimina los datos de un trabajador a partir de su DNI
-      tags:
-        - Trabajador
-      responses:
-        '204':
-          description: Trabajador eliminado
-        '404':
-          description: Trabajador no encontrado
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
-  /trabajador:
     post:
+      operationId: insertTrabajador
       summary: Crea un trabajador
       description: Registra un nuevo trabajador en una tienda
       tags:
@@ -124,7 +128,7 @@ paths:
         schema:
           type: string
           maxLength: 9
-        example: 12345678A
+        example: 11111111A
       - name: aptitud
         in: path
         required: true
@@ -208,7 +212,7 @@ paths:
         schema:
           type: string
           maxLength: 9
-        example: 12345678A
+        example: 11111111A
     get:
       operationId: getTurnosByTrabajador
       summary: Obtiene los turnos de un trabajador
@@ -236,7 +240,7 @@ paths:
         in: path
         required: true
         description: DNI del trabajador
-        example: 12345678A
+        example: 11111111A
         schema:
           type: string
       - name: seccion
@@ -356,11 +360,11 @@ components:
           example: 404
         detail:
           type: string
-          example: Trabajador with identifier 12345678A was not found
+          example: Trabajador with identifier 11111111A was not found
         instance:
           type: string
           format: uri
-          example: /trabajador/12345678A
+          example: /trabajador/11111111A
 
     TiendaSeccionDto:
       type: object
@@ -393,7 +397,7 @@ components:
           type: string
           maxLength: 9
           description: DNI del trabajador
-          example: 12345678A
+          example: 11111111A
         aptitud:
           type: string
           maxLength: 100
@@ -414,7 +418,7 @@ components:
           type: string
           maxLength: 9
           description: DNI del trabajador
-          example: 12345678A
+          example: 11111111A
         nombre:
           type: string
           maxLength: 100
@@ -449,7 +453,7 @@ components:
           type: string
           maxLength: 9
           description: DNI del trabajador
-          example: 12345678A
+          example: 11111111A
         tienda:
           type: integer
           format: int64

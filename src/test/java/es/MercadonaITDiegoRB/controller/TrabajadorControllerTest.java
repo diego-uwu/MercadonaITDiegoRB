@@ -169,7 +169,7 @@ class TrabajadorControllerTest {
     void putReturnsUpdatedTrabajador() throws Exception {
         when(trabajadorService.updateTrabajador(trabajadorDto)).thenReturn(trabajadorDto);
 
-        mockMvc.perform(put("/trabajador/{DNI}", DNI)
+        mockMvc.perform(put("/trabajador")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(VALID_BODY))
                 .andExpect(status().isOk())

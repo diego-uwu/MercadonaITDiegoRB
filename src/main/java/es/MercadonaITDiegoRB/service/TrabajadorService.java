@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @AllArgsConstructor
 public class TrabajadorService {
@@ -60,9 +58,10 @@ public class TrabajadorService {
         trabajadorRepository.deleteById(dni);
     }
 
+    @Transactional
     public TrabajadorDto updateTrabajador(TrabajadorDto trabajadorDto){
         if (!trabajadorRepository.existsById(trabajadorDto.getDni())) {
-            throw new ResourceNotFoundException("Trabajador", "dni");
+            throw new ResourceNotFoundException("Trabajador", trabajadorDto.getDni());
         }
 
         if (!tiendaRepository.existsById(trabajadorDto.getTienda())) {

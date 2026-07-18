@@ -15,24 +15,24 @@ public class TrabajadorController implements TrabajadorApi {
     private final TrabajadorService trabajadorService;
 
     @Override
-    public ResponseEntity<Void> trabajadorDNIDelete(String DNI) {
+    public ResponseEntity<Void> deleteTrabajador(String DNI) {
         trabajadorService.deleteTrabajador(DNI);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .build();
     }
 
     @Override
-    public ResponseEntity<TrabajadorDto> trabajadorDNIGet(String DNI) {
+    public ResponseEntity<TrabajadorDto> getTrabajador(String DNI) {
         return ResponseEntity.ok(trabajadorService.getTrabajadorByDNI(DNI));
     }
 
     @Override
-    public ResponseEntity<TrabajadorDto> trabajadorDNIPut(String DNI, TrabajadorDto trabajadorDto) {
+    public ResponseEntity<TrabajadorDto> updateTrabajador(TrabajadorDto trabajadorDto) {
         return ResponseEntity.ok(trabajadorService.updateTrabajador(trabajadorDto));
     }
 
     @Override
-    public ResponseEntity<TrabajadorDto> trabajadorPost(TrabajadorDto trabajadorDto) {
+    public ResponseEntity<TrabajadorDto> insertTrabajador(TrabajadorDto trabajadorDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(trabajadorService.insertTrabajador(trabajadorDto));

@@ -44,7 +44,7 @@ class DocumentosControllerTest {
         byte[] pdf = "%PDF-report".getBytes();
         when(documentosService.getEstadoTiendaReport(TIENDA_ID)).thenReturn(pdf);
 
-        mockMvc.perform(get("/documentos/estado/{tiendaId}", TIENDA_ID))
+        mockMvc.perform(get("/documento/estado/{tiendaId}", TIENDA_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_PDF))
                 .andExpect(content().bytes(pdf))
@@ -62,7 +62,7 @@ class DocumentosControllerTest {
         when(documentosService.getEstadoTiendaReport(TIENDA_ID))
                 .thenThrow(new ResourceNotFoundException("Tienda", TIENDA_ID));
 
-        mockMvc.perform(get("/documentos/estado/{tiendaId}", TIENDA_ID))
+        mockMvc.perform(get("/documento/estado/{tiendaId}", TIENDA_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title").value("Recurso no encontrado"));
     }
@@ -74,7 +74,7 @@ class DocumentosControllerTest {
                 .thenReturn(pdf);
 
         mockMvc.perform(get(
-                        "/documentos/secciones-incompletas/{tiendaId}",
+                        "/documento/secciones-incompletas/{tiendaId}",
                         TIENDA_ID
                 ))
                 .andExpect(status().isOk())
@@ -95,7 +95,7 @@ class DocumentosControllerTest {
                 .thenThrow(new ResourceNotFoundException("Tienda", TIENDA_ID));
 
         mockMvc.perform(get(
-                        "/documentos/secciones-incompletas/{tiendaId}",
+                        "/documento/secciones-incompletas/{tiendaId}",
                         TIENDA_ID
                 ))
                 .andExpect(status().isNotFound())
