@@ -9,6 +9,15 @@ erDiagram
         NUMBER horas_necesarias
     }
 
+    APTITUD {
+        VARCHAR2 nombre PK
+    }
+
+    SECCION_APTITUD {
+        VARCHAR2 seccion PK, FK
+        VARCHAR2 aptitud PK, FK
+    }
+
     TIENDA_SECCION {
         NUMBER tienda PK, FK
         VARCHAR2 seccion PK, FK
@@ -22,6 +31,11 @@ erDiagram
         NUMBER horas_disponibles
     }
 
+    TRABAJADOR_APTITUD {
+        VARCHAR2 trabajador PK, FK
+        VARCHAR2 aptitud PK, FK
+    }
+
     TRABAJADOR_SECCION {
         VARCHAR2 trabajador PK, FK
         NUMBER tienda PK, FK
@@ -31,6 +45,10 @@ erDiagram
 
     TIENDA ||--o{ TIENDA_SECCION : dispone_de
     SECCION ||--o{ TIENDA_SECCION : esta_en
+    SECCION ||--o{ SECCION_APTITUD : requiere
+    APTITUD ||--o{ SECCION_APTITUD : se_asigna_a
     TIENDA ||--o{ TRABAJADOR : tiene
+    TRABAJADOR ||--o{ TRABAJADOR_APTITUD : posee
+    APTITUD ||--o{ TRABAJADOR_APTITUD : pertenece_a
     TRABAJADOR ||--o{ TRABAJADOR_SECCION : trabaja_en
     TIENDA_SECCION ||--o{ TRABAJADOR_SECCION : recibe_asignacion
