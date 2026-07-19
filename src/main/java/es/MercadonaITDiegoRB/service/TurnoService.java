@@ -6,7 +6,9 @@ import es.MercadonaITDiegoRB.entity.TurnoEntity;
 import es.MercadonaITDiegoRB.entity.TurnoId;
 import es.MercadonaITDiegoRB.exception.HorasDisponiblesExceededException;
 import es.MercadonaITDiegoRB.exception.ResourceNotFoundException;
+import es.MercadonaITDiegoRB.exception.TrabajadorNoCualificadoException;
 import es.MercadonaITDiegoRB.mapper.TurnoMapper;
+import es.MercadonaITDiegoRB.repository.AptitudRepository;
 import es.MercadonaITDiegoRB.repository.TrabajadorRepository;
 import es.MercadonaITDiegoRB.repository.TurnoRepository;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,7 @@ public class TurnoService {
 
     private final TurnoRepository turnoRepository;
     private final TrabajadorRepository trabajadorRepository;
+    private final AptitudRepository aptitudRepository;
     private final TurnoMapper turnoMapper;
 
     @Transactional(readOnly = true)
@@ -41,6 +44,7 @@ public class TurnoService {
         String dni = turnoDto.getDniTrabajador();
         String seccion = turnoDto.getSeccion();
         TrabajadorEntity trabajador = getTrabajadorForUpdate(dni);
+        validateAptitudes(dni, seccion);
         TurnoId turnoId = new TurnoId(dni, trabajador.getTienda(), seccion);
 
         Optional<TurnoEntity> existingTurno = turnoRepository.findById(turnoId);
@@ -83,5 +87,12 @@ public class TurnoService {
     private TrabajadorEntity getTrabajadorForUpdate(String dni) {
         return trabajadorRepository.findByIdForUpdate(dni)
                 .orElseThrow(() -> new ResourceNotFoundException("Trabajador", dni));
+    }
+
+    private void validateAptitudes(String dni, String seccion) {
+        List<String> aptitudesFaltantes = aptitudRepository.findAptitudesFaltantes(dni, seccion);
+        if (!aptitudesFaltantes.isEmpty()) {
+            throw new TrabajadorNoCualificadoException(dni, seccion, aptitudesFaltantes);
+        }
     }
 }

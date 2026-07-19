@@ -76,6 +76,24 @@ class ApiExceptionHandlerTest {
     }
 
     @Test
+    void mapsUnqualifiedTrabajadorToConflict() {
+        TrabajadorNoCualificadoException exception = new TrabajadorNoCualificadoException(
+                "12345678A",
+                "Horno",
+                java.util.List.of("Repostería")
+        );
+
+        ProblemDetail result = handler.handleTrabajadorNoCualificado(exception);
+
+        assertProblemDetail(
+                result,
+                409,
+                "Trabajador no cualificado",
+                exception.getMessage()
+        );
+    }
+
+    @Test
     void mapsDataIntegrityViolationToBadRequest() {
         ProblemDetail result = handler.handleDataIntegrityViolation();
 

@@ -47,6 +47,17 @@ public class ApiExceptionHandler {
         );
     }
 
+    @ExceptionHandler(TrabajadorNoCualificadoException.class)
+    public ProblemDetail handleTrabajadorNoCualificado(
+            TrabajadorNoCualificadoException exception
+    ) {
+        return createProblemDetail(
+                HttpStatus.CONFLICT,
+                "Trabajador no cualificado",
+                exception.getMessage()
+        );
+    }
+
     @ExceptionHandler(TiendaConTrabajadoresException.class)
     public ProblemDetail handleTiendaConTrabajadores(TiendaConTrabajadoresException exception) {
         return createProblemDetail(

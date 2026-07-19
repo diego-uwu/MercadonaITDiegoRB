@@ -6,7 +6,9 @@ import es.MercadonaITDiegoRB.entity.TurnoEntity;
 import es.MercadonaITDiegoRB.entity.TurnoId;
 import es.MercadonaITDiegoRB.exception.HorasDisponiblesExceededException;
 import es.MercadonaITDiegoRB.exception.ResourceNotFoundException;
+import es.MercadonaITDiegoRB.exception.TrabajadorNoCualificadoException;
 import es.MercadonaITDiegoRB.mapper.TurnoMapper;
+import es.MercadonaITDiegoRB.repository.AptitudRepository;
 import es.MercadonaITDiegoRB.repository.TrabajadorRepository;
 import es.MercadonaITDiegoRB.repository.TurnoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +45,9 @@ class TurnoServiceTest {
     private TrabajadorRepository trabajadorRepository;
 
     @Mock
+    private AptitudRepository aptitudRepository;
+
+    @Mock
     private TurnoMapper turnoMapper;
 
     private TurnoService turnoService;
@@ -54,6 +59,7 @@ class TurnoServiceTest {
         turnoService = new TurnoService(
                 turnoRepository,
                 trabajadorRepository,
+                aptitudRepository,
                 turnoMapper
         );
         trabajador = TrabajadorEntity.builder()
@@ -158,6 +164,23 @@ class TurnoServiceTest {
         assertTrue(exception.getMessage().contains("10 horas asignadas"));
         verify(turnoRepository, never()).saveAndFlush(any());
         verifyNoInteractions(turnoMapper);
+    }
+
+    @Test
+    void rejectsTurnoWhenTrabajadorIsMissingRequiredAptitudes() {
+        TurnoDto request = turnoDto(SECCION, 2);
+        mockTrabajadorForUpdate();
+        when(aptitudRepository.findAptitudesFaltantes(DNI, SECCION))
+                .thenReturn(List.of("Hornear Pan", "Repostería"));
+
+        TrabajadorNoCualificadoException exception = assertThrows(
+                TrabajadorNoCualificadoException.class,
+                () -> turnoService.saveTurno(request)
+        );
+
+        assertEquals(List.of("Hornear Pan", "Repostería"), exception.getAptitudesFaltantes());
+        assertTrue(exception.getMessage().contains("Hornear Pan, Repostería"));
+        verifyNoInteractions(turnoRepository, turnoMapper);
     }
 
     @Test

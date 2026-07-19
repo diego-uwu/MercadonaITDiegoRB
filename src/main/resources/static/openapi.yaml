@@ -262,7 +262,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TurnoDto'
         '409':
-          description: Este turno excede el máximo de horas disponibles para el trabajador
+          description: El trabajador no tiene horas disponibles suficientes o no posee todas las aptitudes requeridas por la sección
           content:
             application/problem+json:
               schema:

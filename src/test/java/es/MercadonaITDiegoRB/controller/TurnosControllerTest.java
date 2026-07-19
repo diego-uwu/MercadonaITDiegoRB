@@ -4,6 +4,7 @@ import es.MercadonaITDiegoRB.dto.TurnoDto;
 import es.MercadonaITDiegoRB.exception.ApiExceptionHandler;
 import es.MercadonaITDiegoRB.exception.HorasDisponiblesExceededException;
 import es.MercadonaITDiegoRB.exception.ResourceNotFoundException;
+import es.MercadonaITDiegoRB.exception.TrabajadorNoCualificadoException;
 import es.MercadonaITDiegoRB.service.TurnoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -208,6 +209,25 @@ class TurnosControllerTest {
                 .andExpect(jsonPath("$.title").value("Horas disponibles excedidas"))
                 .andExpect(jsonPath("$.detail").value(
                         org.hamcrest.Matchers.containsString(DNI)
+                ));
+    }
+
+    @Test
+    void putReturnsConflictWhenTrabajadorIsNotQualified() throws Exception {
+        when(turnoService.saveTurno(any(TurnoDto.class)))
+                .thenThrow(new TrabajadorNoCualificadoException(
+                        DNI,
+                        SECCION,
+                        java.util.List.of("Repostería")
+                ));
+
+        mockMvc.perform(put("/turno")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_BODY))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.title").value("Trabajador no cualificado"))
+                .andExpect(jsonPath("$.detail").value(
+                        org.hamcrest.Matchers.containsString("Repostería")
                 ));
     }
 
