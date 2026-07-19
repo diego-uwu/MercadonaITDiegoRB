@@ -92,10 +92,10 @@ class TiendaServiceTest {
         assertEquals(TIENDA_ID, result.getCodigo());
         assertEquals("Tienda 4", result.getNombre());
         assertEquals(2, result.getSecciones().size());
-        assertEquals("Cajas", result.getSecciones().get(0).getNombre());
-        assertEquals(16, result.getSecciones().get(0).getHorasNecesarias());
+        assertEquals("Cajas", result.getSecciones().getFirst().getNombre());
+        assertEquals(16, result.getSecciones().getFirst().getHorasNecesarias());
         assertEquals(List.of("Matemáticas", "Simpatía"),
-                result.getSecciones().get(0).getAptitudes());
+                result.getSecciones().getFirst().getAptitudes());
         assertEquals("Horno", result.getSecciones().get(1).getNombre());
         assertEquals(List.of(), result.getSecciones().get(1).getAptitudes());
     }

@@ -166,7 +166,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         '409':
-          description: La actualización entra en conflicto con los datos existentes
+          description: Las horas disponibles indicadas son inferiores a las horas que el trabajador ya tiene asignadas
           content:
             application/problem+json:
               schema:

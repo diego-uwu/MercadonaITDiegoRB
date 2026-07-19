@@ -2,12 +2,14 @@ package es.MercadonaITDiegoRB.service;
 
 import es.MercadonaITDiegoRB.dto.TrabajadorDto;
 import es.MercadonaITDiegoRB.entity.TrabajadorEntity;
+import es.MercadonaITDiegoRB.exception.HorasDisponiblesExceededException;
 import es.MercadonaITDiegoRB.exception.InvalidReferenceException;
 import es.MercadonaITDiegoRB.exception.ResourceAlreadyExistsException;
 import es.MercadonaITDiegoRB.exception.ResourceNotFoundException;
 import es.MercadonaITDiegoRB.mapper.TrabajadorMapper;
 import es.MercadonaITDiegoRB.repository.TiendaRepository;
 import es.MercadonaITDiegoRB.repository.TrabajadorRepository;
+import es.MercadonaITDiegoRB.repository.TurnoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +39,9 @@ class TrabajadorServiceTest {
     private TiendaRepository tiendaRepository;
 
     @Mock
+    private TurnoRepository turnoRepository;
+
+    @Mock
     private TrabajadorMapper trabajadorMapper;
 
     private TrabajadorService trabajadorService;
@@ -48,6 +53,7 @@ class TrabajadorServiceTest {
         trabajadorService = new TrabajadorService(
                 trabajadorRepository,
                 tiendaRepository,
+                turnoRepository,
                 trabajadorMapper
         );
         trabajadorDto = new TrabajadorDto()
@@ -166,8 +172,10 @@ class TrabajadorServiceTest {
 
     @Test
     void updatesTrabajadorWhenDniAndTiendaAreValid() {
-        when(trabajadorRepository.existsById(DNI)).thenReturn(true);
+        when(trabajadorRepository.findByIdForUpdate(DNI))
+                .thenReturn(Optional.of(trabajadorEntity));
         when(tiendaRepository.existsById(TIENDA)).thenReturn(true);
+        when(turnoRepository.sumHorasAsignadasByTrabajador(DNI)).thenReturn(8L);
         when(trabajadorMapper.toEntity(trabajadorDto)).thenReturn(trabajadorEntity);
         when(trabajadorRepository.saveAndFlush(trabajadorEntity))
                 .thenReturn(trabajadorEntity);
@@ -181,20 +189,21 @@ class TrabajadorServiceTest {
 
     @Test
     void rejectsUpdateWhenTrabajadorDoesNotExist() {
-        when(trabajadorRepository.existsById(DNI)).thenReturn(false);
+        when(trabajadorRepository.findByIdForUpdate(DNI)).thenReturn(Optional.empty());
 
         assertThrows(
                 ResourceNotFoundException.class,
                 () -> trabajadorService.updateTrabajador(trabajadorDto)
         );
 
-        verifyNoInteractions(tiendaRepository, trabajadorMapper);
+        verifyNoInteractions(tiendaRepository, turnoRepository, trabajadorMapper);
         verify(trabajadorRepository, never()).saveAndFlush(trabajadorEntity);
     }
 
     @Test
     void rejectsUpdateWhenTiendaDoesNotExist() {
-        when(trabajadorRepository.existsById(DNI)).thenReturn(true);
+        when(trabajadorRepository.findByIdForUpdate(DNI))
+                .thenReturn(Optional.of(trabajadorEntity));
         when(tiendaRepository.existsById(TIENDA)).thenReturn(false);
 
         assertThrows(
@@ -202,6 +211,28 @@ class TrabajadorServiceTest {
                 () -> trabajadorService.updateTrabajador(trabajadorDto)
         );
 
+        verifyNoInteractions(turnoRepository, trabajadorMapper);
+        verify(trabajadorRepository, never()).saveAndFlush(trabajadorEntity);
+    }
+
+    @Test
+    void rejectsUpdateWhenAssignedHoursExceedNewAvailableHours() {
+        trabajadorDto.setHorasDisponibles(4);
+        when(trabajadorRepository.findByIdForUpdate(DNI))
+                .thenReturn(Optional.of(trabajadorEntity));
+        when(tiendaRepository.existsById(TIENDA)).thenReturn(true);
+        when(turnoRepository.sumHorasAsignadasByTrabajador(DNI)).thenReturn(8L);
+
+        HorasDisponiblesExceededException exception = assertThrows(
+                HorasDisponiblesExceededException.class,
+                () -> trabajadorService.updateTrabajador(trabajadorDto)
+        );
+
+        assertEquals(
+                "El trabajador " + DNI
+                        + " tendría 8 horas asignadas, superando sus 4 horas disponibles",
+                exception.getMessage()
+        );
         verifyNoInteractions(trabajadorMapper);
         verify(trabajadorRepository, never()).saveAndFlush(trabajadorEntity);
     }

@@ -34,7 +34,9 @@ public class DocumentBuilderUtils {
             String address,
             String city
     ) {
-        Paragraph name = new Paragraph(tiendaNombre, BOLD_FONT);
+        Paragraph name = new Paragraph();
+        name.add(new Chunk("Nombre de la tienda: ", BOLD_FONT));
+        name.add(new Chunk(tiendaNombre, BODY_FONT));
         name.setSpacingAfter(4);
         document.add(name);
 

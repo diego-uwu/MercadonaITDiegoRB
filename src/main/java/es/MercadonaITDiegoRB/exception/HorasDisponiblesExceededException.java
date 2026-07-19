@@ -8,8 +8,8 @@ public class HorasDisponiblesExceededException extends RuntimeException {
             long horasResultantes
     ) {
         super(
-                "El turno dejaría al trabajador " + dni
-                        + " con " + horasResultantes
+                "El trabajador " + dni
+                        + " tendría " + horasResultantes
                         + " horas asignadas, superando sus "
                         + horasDisponibles + " horas disponibles"
         );

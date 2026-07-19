@@ -2,6 +2,7 @@ package es.MercadonaITDiegoRB.controller;
 
 import es.MercadonaITDiegoRB.dto.TrabajadorDto;
 import es.MercadonaITDiegoRB.exception.ApiExceptionHandler;
+import es.MercadonaITDiegoRB.exception.HorasDisponiblesExceededException;
 import es.MercadonaITDiegoRB.exception.InvalidReferenceException;
 import es.MercadonaITDiegoRB.exception.ResourceAlreadyExistsException;
 import es.MercadonaITDiegoRB.exception.ResourceNotFoundException;
@@ -176,6 +177,18 @@ class TrabajadorControllerTest {
                 .andExpect(jsonPath("$.dni").value(DNI));
 
         verify(trabajadorService).updateTrabajador(trabajadorDto);
+    }
+
+    @Test
+    void putReturnsConflictWhenAssignedHoursExceedNewAvailableHours() throws Exception {
+        when(trabajadorService.updateTrabajador(trabajadorDto))
+                .thenThrow(new HorasDisponiblesExceededException(DNI, 4, 8));
+
+        mockMvc.perform(put("/trabajador")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_BODY))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.title").value("Horas disponibles excedidas"));
     }
 
     @Test
