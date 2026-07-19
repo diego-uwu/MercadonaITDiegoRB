@@ -1,5 +1,6 @@
 package es.MercadonaITDiegoRB.service;
 
+import es.MercadonaITDiegoRB.dto.TiendaDetalleDto;
 import es.MercadonaITDiegoRB.dto.TiendaDto;
 import es.MercadonaITDiegoRB.entity.TiendaEntity;
 import es.MercadonaITDiegoRB.exception.ResourceAlreadyExistsException;
@@ -8,6 +9,7 @@ import es.MercadonaITDiegoRB.exception.TiendaConTrabajadoresException;
 import es.MercadonaITDiegoRB.mapper.TiendaMapper;
 import es.MercadonaITDiegoRB.repository.TiendaRepository;
 import es.MercadonaITDiegoRB.repository.TrabajadorRepository;
+import es.MercadonaITDiegoRB.repository.projection.TiendaDetalleRow;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +17,10 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.inOrder;
@@ -75,6 +79,37 @@ class TiendaServiceTest {
     }
 
     @Test
+    void getReturnsTiendaWithSeccionesAndRequiredAptitudes() {
+        when(tiendaRepository.findById(TIENDA_ID)).thenReturn(Optional.of(tiendaEntity));
+        when(tiendaRepository.findDetalleRows(TIENDA_ID)).thenReturn(List.of(
+                detalleRow("Cajas", 16, "Matemáticas"),
+                detalleRow("Cajas", 16, "Simpatía"),
+                detalleRow("Horno", 8, null)
+        ));
+
+        TiendaDetalleDto result = tiendaService.getTienda(TIENDA_ID);
+
+        assertEquals(TIENDA_ID, result.getCodigo());
+        assertEquals("Tienda 4", result.getNombre());
+        assertEquals(2, result.getSecciones().size());
+        assertEquals("Cajas", result.getSecciones().get(0).getNombre());
+        assertEquals(16, result.getSecciones().get(0).getHorasNecesarias());
+        assertEquals(List.of("Matemáticas", "Simpatía"),
+                result.getSecciones().get(0).getAptitudes());
+        assertEquals("Horno", result.getSecciones().get(1).getNombre());
+        assertEquals(List.of(), result.getSecciones().get(1).getAptitudes());
+    }
+
+    @Test
+    void getRejectsUnknownTienda() {
+        when(tiendaRepository.findById(TIENDA_ID)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> tiendaService.getTienda(TIENDA_ID));
+
+        verify(tiendaRepository, never()).findDetalleRows(TIENDA_ID);
+    }
+
+    @Test
     void deleteRemovesSeccionesBeforeTienda() {
         when(tiendaRepository.findById(TIENDA_ID)).thenReturn(Optional.of(tiendaEntity));
         when(trabajadorRepository.existsByTienda(TIENDA_ID)).thenReturn(false);
@@ -105,5 +140,28 @@ class TiendaServiceTest {
 
         verifyNoInteractions(trabajadorRepository);
         verify(tiendaRepository, never()).deleteSecciones(TIENDA_ID);
+    }
+
+    private TiendaDetalleRow detalleRow(
+            String seccion,
+            Integer horasNecesarias,
+            String aptitud
+    ) {
+        return new TiendaDetalleRow() {
+            @Override
+            public String getSeccion() {
+                return seccion;
+            }
+
+            @Override
+            public Integer getHorasNecesarias() {
+                return horasNecesarias;
+            }
+
+            @Override
+            public String getAptitud() {
+                return aptitud;
+            }
+        };
     }
 }

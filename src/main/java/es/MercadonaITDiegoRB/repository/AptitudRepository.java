@@ -12,6 +12,9 @@ import java.util.List;
 @Repository
 public interface AptitudRepository extends JpaRepository<AptitudTrabajadorEntity, AptitudTrabajadorId> {
 
+    @Query(value = "SELECT COUNT(*) FROM aptitud WHERE nombre = :aptitud", nativeQuery = true)
+    long countByAptitudNombre(@Param("aptitud") String aptitud);
+
     @Query(value = """
             SELECT sa.aptitud
             FROM seccion_aptitud sa

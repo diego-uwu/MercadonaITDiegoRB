@@ -59,6 +59,7 @@ class AptitudServiceTest {
                 .aptitud(APTITUD);
         when(aptitudRepository.existsById(id)).thenReturn(false);
         when(trabajadorRepository.existsById(DNI)).thenReturn(true);
+        when(aptitudRepository.countByAptitudNombre(APTITUD)).thenReturn(1L);
         when(aptitudRepository.save(any(AptitudTrabajadorEntity.class))).thenReturn(saved);
         when(mapper.toDto(saved)).thenReturn(response);
 
@@ -86,6 +87,21 @@ class AptitudServiceTest {
     void rejectsUnknownTrabajador() {
         when(aptitudRepository.existsById(id)).thenReturn(false);
         when(trabajadorRepository.existsById(DNI)).thenReturn(false);
+
+        assertThrows(
+                InvalidReferenceException.class,
+                () -> service.addAptitud(DNI, APTITUD)
+        );
+
+        verify(aptitudRepository, never()).save(any(AptitudTrabajadorEntity.class));
+        verifyNoInteractions(mapper);
+    }
+
+    @Test
+    void rejectsUnknownAptitud() {
+        when(aptitudRepository.existsById(id)).thenReturn(false);
+        when(trabajadorRepository.existsById(DNI)).thenReturn(true);
+        when(aptitudRepository.countByAptitudNombre(APTITUD)).thenReturn(0L);
 
         assertThrows(
                 InvalidReferenceException.class,

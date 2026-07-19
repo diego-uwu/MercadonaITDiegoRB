@@ -1,5 +1,7 @@
 package es.MercadonaITDiegoRB.controller;
 
+import es.MercadonaITDiegoRB.dto.SeccionDetalleDto;
+import es.MercadonaITDiegoRB.dto.TiendaDetalleDto;
 import es.MercadonaITDiegoRB.dto.TiendaDto;
 import es.MercadonaITDiegoRB.exception.ApiExceptionHandler;
 import es.MercadonaITDiegoRB.exception.ResourceAlreadyExistsException;
@@ -15,12 +17,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,6 +86,39 @@ class TiendaControllerTest {
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(tiendaService);
+    }
+
+    @Test
+    void getReturnsTiendaWithSeccionesAndAptitudes() throws Exception {
+        TiendaDetalleDto response = new TiendaDetalleDto()
+                .codigo(TIENDA_ID)
+                .nombre("Tienda 4")
+                .secciones(List.of(
+                        new SeccionDetalleDto()
+                                .nombre("Cajas")
+                                .horasNecesarias(16)
+                                .aptitudes(List.of("Matemáticas", "Simpatía"))
+                ));
+        when(tiendaService.getTienda(TIENDA_ID)).thenReturn(response);
+
+        mockMvc.perform(get("/tienda/{tiendaId}", TIENDA_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value(TIENDA_ID))
+                .andExpect(jsonPath("$.nombre").value("Tienda 4"))
+                .andExpect(jsonPath("$.secciones[0].nombre").value("Cajas"))
+                .andExpect(jsonPath("$.secciones[0].horasNecesarias").value(16))
+                .andExpect(jsonPath("$.secciones[0].aptitudes[0]").value("Matemáticas"));
+
+        verify(tiendaService).getTienda(TIENDA_ID);
+    }
+
+    @Test
+    void getReturnsNotFoundForUnknownTienda() throws Exception {
+        when(tiendaService.getTienda(TIENDA_ID))
+                .thenThrow(new ResourceNotFoundException("Tienda", TIENDA_ID));
+
+        mockMvc.perform(get("/tienda/{tiendaId}", TIENDA_ID))
+                .andExpect(status().isNotFound());
     }
 
     @Test

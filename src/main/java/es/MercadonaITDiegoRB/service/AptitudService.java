@@ -39,6 +39,14 @@ public class AptitudService {
             );
         }
 
+        if (aptitudRepository.countByAptitudNombre(aptitud) == 0) {
+            throw new InvalidReferenceException(
+                    "El trabajador",
+                    "aptitud",
+                    aptitud
+            );
+        }
+
         AptitudTrabajadorEntity saved = aptitudRepository.save(
                 new AptitudTrabajadorEntity(id)
         );

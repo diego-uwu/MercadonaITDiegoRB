@@ -49,6 +49,25 @@ paths:
           format: int64
           minimum: 1
         example: 1
+    get:
+      operationId: getTienda
+      summary: Obtiene una tienda con sus secciones y aptitudes requeridas
+      description: Recupera los datos de la tienda, sus secciones y las aptitudes necesarias para cada sección
+      tags:
+        - Tienda
+      responses:
+        '200':
+          description: Tienda encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiendaDetalleDto'
+        '404':
+          description: Tienda no encontrada
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
     delete:
       operationId: deleteTienda
       summary: Elimina una tienda
@@ -469,6 +488,58 @@ components:
           maxLength: 100
           description: Nombre de la tienda
           example: Tienda 4
+
+    TiendaDetalleDto:
+      type: object
+      additionalProperties: false
+      description: Tienda con sus secciones y las aptitudes requeridas por cada una
+      required:
+        - codigo
+        - nombre
+        - secciones
+      properties:
+        codigo:
+          type: integer
+          format: int64
+          description: Código de la tienda
+          example: 1
+        nombre:
+          type: string
+          maxLength: 100
+          description: Nombre de la tienda
+          example: Tienda 1
+        secciones:
+          type: array
+          description: Secciones disponibles en la tienda
+          items:
+            $ref: '#/components/schemas/SeccionDetalleDto'
+
+    SeccionDetalleDto:
+      type: object
+      additionalProperties: false
+      description: Sección de una tienda con sus aptitudes requeridas
+      required:
+        - nombre
+        - horasNecesarias
+        - aptitudes
+      properties:
+        nombre:
+          type: string
+          maxLength: 50
+          description: Nombre de la sección
+          example: Cajas
+        horasNecesarias:
+          type: integer
+          description: Horas necesarias para cubrir la sección
+          example: 16
+        aptitudes:
+          type: array
+          description: Aptitudes necesarias para trabajar en la sección
+          items:
+            type: string
+          example:
+            - Matemáticas
+            - Simpatía
 
     AptitudTrabajadorDto:
       type: object

@@ -1,6 +1,7 @@
 package es.MercadonaITDiegoRB.controller;
 
 import es.MercadonaITDiegoRB.api.TiendaApi;
+import es.MercadonaITDiegoRB.dto.TiendaDetalleDto;
 import es.MercadonaITDiegoRB.dto.TiendaDto;
 import es.MercadonaITDiegoRB.service.TiendaService;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,11 @@ public class TiendaController implements TiendaApi {
     public ResponseEntity<TiendaDto> insertTienda(TiendaDto tiendaDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(tiendaService.insertTienda(tiendaDto));
+    }
+
+    @Override
+    public ResponseEntity<TiendaDetalleDto> getTienda(Long tiendaId) {
+        return ResponseEntity.ok(tiendaService.getTienda(tiendaId));
     }
 
     @Override
