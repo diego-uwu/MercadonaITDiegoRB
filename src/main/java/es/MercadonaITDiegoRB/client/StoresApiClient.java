@@ -37,7 +37,7 @@ public class StoresApiClient {
 
             return store;
         } catch (RestClientException exception) {
-            throw new ExternalApiException(tiendaId, exception);
+            return new StoreDto(tiendaId, "?", "?", "?");
         }
     }
 }

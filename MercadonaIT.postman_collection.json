@@ -1,0 +1,406 @@
+{
+  "info": {
+    "_postman_id": "287178f7-d40e-4f63-8934-3a8cac5910db",
+    "name": "MercadonaIT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49505909",
+    "_collection_link": "https://go.postman.co/collection/49505909-287178f7-d40e-4f63-8934-3a8cac5910db?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Tienda",
+      "item": [
+        {
+          "name": "Crear tienda",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"codigo\" : 4,\r\n    \"nombre\" : \"Tienda 4\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/tienda",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "tienda"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar tienda (+ secciones y aptitudes)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/tienda/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "tienda",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar tienda",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"codigo\" : 5,\r\n    \"nombre\" : \"Tienda 5\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/tienda/4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "tienda",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Trabajador",
+      "item": [
+        {
+          "name": "Consultar Trabajador",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8081/trabajador/11111111A",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "trabajador",
+                "11111111A"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Borrar Trabajador",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:8081/trabajador/12345678Z",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "trabajador",
+                "12345678Z"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Trabajador",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"dni\": \"12345678Z\",\r\n    \"nombre\": \"Diego\",\r\n    \"apellidos\": \"Rodríguez Barrera\",\r\n    \"tienda\": 1,\r\n    \"horasDisponibles\": 8\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8081/trabajador",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "trabajador"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insertar Trabajador",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"dni\": \"12345678Z\",\r\n    \"nombre\": \"Diego\",\r\n    \"apellidos\": \"Rodríguez Barrera\",\r\n    \"tienda\": 1,\r\n    \"horasDisponibles\": 8\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8081/trabajador",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "trabajador"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Aptitudes del trabajador",
+      "item": [
+        {
+          "name": "Añadir aptitud a trabajador",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/trabajador/11111111A/aptitudes/Alquimia",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "trabajador",
+                "11111111A",
+                "aptitudes",
+                "Alquimia"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar aptitud del trabajador",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/trabajador/11111111A/aptitudes/Alquimia",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "trabajador",
+                "11111111A",
+                "aptitudes",
+                "Alquimia"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Turnos",
+      "item": [
+        {
+          "name": "Añadir o actualizar turno",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"dniTrabajador\" : \"11111111A\",\r\n    \"seccion\" : \"Droguería\",\r\n    \"horas\" : 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/turno",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "turno"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar turnos del trabajador",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"dniTrabajador\" : \"12345678A\",\r\n    \"seccion\" : \"Drogueria\",\r\n    \"horas\" : 1\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/turno/11111111A",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "turno",
+                "11111111A"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Borrar turno",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/turno/11111111A/Horno",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "turno",
+                "11111111A",
+                "Horno"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Documentos",
+      "item": [
+        {
+          "name": "Obtener información de tienda",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/documento/estado/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "documento",
+                "estado",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener secciones incompletas de tienda",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/documento/secciones-incompletas/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "documento",
+                "secciones-incompletas",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "API externa",
+      "item": [
+        {
+          "name": "Obtener listado de tiendas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/stores",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "stores"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener detalle de tienda",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/stores/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "stores",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
