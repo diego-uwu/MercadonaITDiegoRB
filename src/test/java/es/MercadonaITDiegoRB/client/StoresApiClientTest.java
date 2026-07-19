@@ -1,7 +1,6 @@
 package es.MercadonaITDiegoRB.client;
 
 import es.MercadonaITDiegoRB.client.dto.StoreDto;
-import es.MercadonaITDiegoRB.exception.ExternalApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -9,7 +8,6 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.ExpectedCount.once;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -56,11 +54,16 @@ class StoresApiClientTest {
     }
 
     @Test
-    void translatesExternalNotFoundResponse() {
+    void returnsFallbackStoreWhenExternalApiFails() {
         server.expect(once(), requestTo("http://localhost:8080/stores/99"))
                 .andRespond(withResourceNotFound());
 
-        assertThrows(ExternalApiException.class, () -> client.getStore(99L));
+        StoreDto result = client.getStore(99L);
+
+        assertEquals(99L, result.id());
+        assertEquals("?", result.description());
+        assertEquals("?", result.address());
+        assertEquals("?", result.city());
         server.verify();
     }
 }
