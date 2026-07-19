@@ -112,14 +112,7 @@ INSERT INTO tienda_seccion (tienda, seccion) VALUES
 (1, 'Droguería'),
 (2, 'Horno'),
 (2, 'Cajas'),
-(2, 'Pescadería'),
-(2, 'Verduras'),
-(2, 'Droguería'),
-(3, 'Horno'),
-(3, 'Cajas'),
-(3, 'Pescadería'),
-(3, 'Verduras'),
-(3, 'Droguería');
+(2, 'Pescadería');
 
 INSERT INTO trabajador (dni, nombre, apellidos, tienda, horas_disponibles) VALUES
 ('11111111A', 'Diego', 'Rodríguez Barrera', 1, 8),
